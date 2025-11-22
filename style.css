@@ -84,7 +84,7 @@ header p {
 
 /* Map */
 main {
-  height: calc(100vh - 160px); 
+  height: calc(100vh - 160px);
   position: relative;
 }
 
@@ -105,7 +105,7 @@ main {
   width: 260px;
   border-radius: 8px;
   z-index: 9999;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
 #info-panel.active {
