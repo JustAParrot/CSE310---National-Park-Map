@@ -1,150 +1,218 @@
 let map;
-let markers = [];
-let parksData = [];
+let parkMarkers = [];
+let campsiteMarkers = [];
 
-async function initMap() {
-  try {
-    const parksRes = await fetch("data/parks.json");
-    parksData = await parksRes.json();
-  } catch (err) {
-    console.error("Error loading parks.json:", err);
-    parksData = [];
-  }
-
-  let mapStyle = null;
-  try {
-    const styleRes = await fetch("assets/mapStyle.json");
-    mapStyle = await styleRes.json();
-  } catch (err) {
-    console.warn("Could not load mapStyle.json, using default style.");
-  }
-
+/* -------------------------------------------
+   INIT MAP
+------------------------------------------- */
+function initMap() {
   map = new google.maps.Map(document.getElementById("map"), {
-    center: { lat: 39.5, lng: -98.35 },
+    center: { lat: 39.5, lng: -98.35 }, // center of the US
     zoom: 4,
-    styles: mapStyle || null,
-    streetViewControl: false
+    styles: null
   });
 
-  loadMarkers(parksData);
+  // Load custom map style
+  fetch("assets/mapStyle.json")
+    .then((res) => res.json())
+    .then((style) => map.setOptions({ styles: style }));
+
+  // Load BOTH datasets
+  Promise.all([loadParks(), loadCampsites()]).then(() => {
+    console.log("Parks and Campsites loaded");
+  });
 
   setupFilters();
   setupSearch();
-
-  // Close side panel when clicking on empty map space
-  map.addListener("click", () => {
-    document.getElementById("info-panel").classList.remove("active");
-  });
 }
 
-function loadMarkers(list) {
-  markers.forEach((m) => m.setMap(null));
-  markers = [];
-
-  const bounds = new google.maps.LatLngBounds();
-
-  list.forEach((park) => {
-    const position = { lat: park.lat, lng: park.lng };
-
-    const marker = new google.maps.Marker({
-      position,
-      map,
-      title: park.name
-    });
-
-    marker.addListener("click", () => {
-      showParkInfo(park);
-    });
-
-    markers.push(marker);
-    bounds.extend(position);
-  });
-
-  if (!bounds.isEmpty()) {
-    map.fitBounds(bounds);
-  }
-}
-
-async function showParkInfo(park) {
+// Close info panel when clicking outside of it
+document.addEventListener("click", function (event) {
   const panel = document.getElementById("info-panel");
-  const nameEl = document.getElementById("park-name");
-  const regionEl = document.getElementById("park-region");
-  const descEl = document.getElementById("park-description");
-  const weatherEl = document.getElementById("park-weather");
 
-  nameEl.textContent = park.name;
-  regionEl.textContent = "Region: " + park.region;
-  descEl.textContent = park.description;
-  weatherEl.textContent = "Loading weather...";
+  // If panel is not visible, do nothing
+  if (panel.style.display === "none") return;
 
-  panel.classList.add("active");
+  // If the click was INSIDE the panel, do nothing
+  if (panel.contains(event.target)) return;
 
-  // Simple weather lookup from Open-Meteo (no API key required)
-  try {
-    const url = `https://api.open-meteo.com/v1/forecast?latitude=${park.lat}&longitude=${park.lng}&current=temperature_2m`;
-    const res = await fetch(url);
-    const data = await res.json();
+  // If the click was on a marker (Google draws markers in <img> tags)
+  if (event.target.tagName === "IMG" && event.target.src.includes("maps.gstatic.com")) {
+    return;
+  }
 
-    if (data && data.current && typeof data.current.temperature_2m === "number") {
-      const t = data.current.temperature_2m;
-      weatherEl.textContent = `Current temperature: ${t.toFixed(1)} °C`;
-    } else {
-      weatherEl.textContent = "Weather data not available.";
+  // Otherwise close the panel
+  closeInfoPanel();
+});
+
+
+/* -------------------------------------------
+   LOAD PARKS
+------------------------------------------- */
+function loadParks() {
+  return fetch("data/parks.json")
+    .then((res) => res.json())
+    .then((parks) => {
+      parkMarkers = parks.map((park) => createMarker(park, "park"));
+    });
+}
+
+/* -------------------------------------------
+   LOAD CAMPSITES
+------------------------------------------- */
+function loadCampsites() {
+  return fetch("data/campsites.json")
+    .then((res) => res.json())
+    .then((campsites) => {
+      campsiteMarkers = campsites.map((camp) =>
+        createMarker(camp, "campsite")
+      );
+    });
+}
+
+/* -------------------------------------------
+   CREATE MARKER (FIXED)
+------------------------------------------- */
+function createMarker(item, type) {
+  const iconUrl =
+    type === "park"
+      ? "assets/icons8-tree-32.png"
+      : "assets/campsite.png";
+
+  const marker = new google.maps.Marker({
+    position: { lat: item.lat, lng: item.lng },
+    map: map,
+    title: item.name,
+    icon: {
+      url: iconUrl,
+      scaledSize: new google.maps.Size(28, 28)
     }
-  } catch (err) {
-    console.error("Error fetching weather:", err);
-    weatherEl.textContent = "Could not load weather.";
-  }
+  });
+
+  marker.itemData = item;
+  marker.dataType = type;
+
+  marker.addListener("click", () => {
+    showInfoPanel(item, type);
+    fetchWeather(item.lat, item.lng);
+  });
+
+  return marker;
 }
 
-// Region filter buttons
-function setupFilters() {
-  const panel = document.getElementById("info-panel");
+/* -------------------------------------------
+   SHOW INFO PANEL
+------------------------------------------- */
+function showInfoPanel(item, type) {
+  document.getElementById("park-name").textContent = item.name;
+  document.getElementById("park-region").textContent = `Region: ${item.region}`;
 
+  const label = type === "park" ? "National Park" : "Campsite";
+
+  document.getElementById("park-description").textContent =
+    `${label}: ${item.description}`;
+
+  document.getElementById("info-panel").style.display = "block";
+}
+
+/* -------------------------------------------
+   WEATHER FETCH
+------------------------------------------- */
+function fetchWeather(lat, lng) {
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current=temperature_2m&temperature_unit=fahrenheit`;
+
+  fetch(url)
+    .then((res) => res.json())
+    .then((weather) => {
+      const degrees = weather.current?.temperature_2m;
+      document.getElementById(
+        "park-weather"
+      ).textContent = `Temperature: ${degrees}°F`;
+    })
+    .catch(() => {
+      document.getElementById("park-weather").textContent =
+        "Weather unavailable.";
+    });
+}
+
+/* -------------------------------------------
+   REGION FILTERS (FIXED)
+------------------------------------------- */
+function setupFilters() {
   document.querySelectorAll("#filters button").forEach((btn) => {
     btn.addEventListener("click", () => {
       const region = btn.dataset.region;
-      let filtered = parksData;
-
-      if (region !== "All") {
-        filtered = parksData.filter((p) => p.region === region);
-      }
-
-      loadMarkers(filtered);
-      panel.classList.remove("active");
+      filterByRegion(region);
     });
   });
 }
 
-// Search bar filtering by park name
+function filterByRegion(region) {
+  // Hide all markers first
+  parkMarkers.forEach((m) => m.setMap(null));
+  campsiteMarkers.forEach((m) => m.setMap(null));
+
+  let visibleParks = parkMarkers;
+  let visibleCampsites = campsiteMarkers;
+
+  if (region !== "All") {
+    visibleParks = visibleParks.filter(
+      (m) => m.itemData.region === region
+    );
+
+    visibleCampsites = visibleCampsites.filter(
+      (m) => m.itemData.region === region
+    );
+  }
+
+  // Show filtered markers
+  visibleParks.forEach((m) => m.setMap(map));
+  visibleCampsites.forEach((m) => m.setMap(map));
+
+  autoFitMarkers([...visibleParks, ...visibleCampsites]);
+}
+
+/* -------------------------------------------
+   AUTO ZOOM TO VISIBLE MARKERS
+------------------------------------------- */
+function autoFitMarkers(markers) {
+  if (!markers || markers.length === 0) return;
+
+  const bounds = new google.maps.LatLngBounds();
+  markers.forEach((m) => bounds.extend(m.getPosition()));
+
+  map.fitBounds(bounds);
+}
+
+/* -------------------------------------------
+   SEARCH BAR (FIXED)
+------------------------------------------- */
 function setupSearch() {
   const input = document.getElementById("search-input");
   const clearBtn = document.getElementById("search-clear");
-  const panel = document.getElementById("info-panel");
 
-  if (!input) return;
-
-  const applySearch = () => {
-    const term = input.value.trim().toLowerCase();
-
-    if (!term) {
-      loadMarkers(parksData);
-      panel.classList.remove("active");
-      return;
-    }
-
-    const filtered = parksData.filter((p) =>
-      p.name.toLowerCase().includes(term)
-    );
-    loadMarkers(filtered);
-    panel.classList.remove("active");
-  };
-
-  input.addEventListener("input", applySearch);
+  input.addEventListener("input", () => {
+    const text = input.value.toLowerCase();
+    searchMarkers(text);
+  });
 
   clearBtn.addEventListener("click", () => {
     input.value = "";
-    loadMarkers(parksData);
-    panel.classList.remove("active");
+    searchMarkers("");
   });
 }
+
+function searchMarkers(text) {
+  const allMarkers = [...parkMarkers, ...campsiteMarkers];
+
+  allMarkers.forEach((m) => {
+    const name = m.itemData.name.toLowerCase();
+    m.setMap(name.includes(text) ? map : null);
+  });
+}
+
+function closeInfoPanel() {
+  document.getElementById("info-panel").style.display = "none";
+}
+
+document.getElementById("close-panel").addEventListener("click", closeInfoPanel);

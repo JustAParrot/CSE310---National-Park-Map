@@ -1,0 +1,37 @@
+[
+    {
+        "name": "Jenny Lake Campground",
+        "lat": 43.7545,
+        "lng": -110.7187,
+        "region": "West",
+        "description": "A beautiful lakeside campground inside Grand Teton National Park with access to views, trails, and wildlife."
+    },
+    {
+        "name": "Lodgepole Campground",
+        "lat": 36.6053,
+        "lng": -118.7326,
+        "region": "West",
+        "description": "One of the largest campgrounds in Sequoia National Park, surrounded by giant sequoias."
+    },
+    {
+        "name": "Mather Campground",
+        "lat": 36.0486,
+        "lng": -112.1214,
+        "region": "West",
+        "description": "A popular campground on the South Rim of the Grand Canyon."
+    },
+    {
+        "name": "Maquoketa Caves Campground",
+        "lat": 42.1161,
+        "lng": -90.8065,
+        "region": "Midwest",
+        "description": "A unique campground near caves and hiking trails in Maquoketa Caves State Park."
+    },
+    {
+        "name": "Cades Cove Campground",
+        "lat": 35.6032,
+        "lng": -83.7768,
+        "region": "East",
+        "description": "Located in Great Smoky Mountains National Park, known for wildlife and scenic loops."
+    }
+]

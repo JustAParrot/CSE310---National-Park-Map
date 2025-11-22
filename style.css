@@ -95,18 +95,17 @@ main {
 
 /* Info panel */
 #info-panel {
-  position: fixed;
-  right: 0;
-  top: 160px;
-  width: 280px;
-  height: calc(100vh - 160px);
-  background: #2a2438;
-  border-left: 2px solid #a855f7;
-  padding: 1rem;
+  display: none;
+  position: absolute;
+  right: 20px;
+  top: 150px;
+  background: #111;
+  padding: 20px;
   color: white;
-  transform: translateX(100%);
-  transition: transform 0.25s ease;
-  box-shadow: -4px 0 16px rgba(0, 0, 0, 0.4);
+  width: 260px;
+  border-radius: 8px;
+  z-index: 9999;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
 }
 
 #info-panel.active {
@@ -130,4 +129,15 @@ main {
 #park-weather {
   font-size: 0.9rem;
   color: #facc15;
+}
+
+#close-panel {
+  position: absolute;
+  top: 5px;
+  right: 10px;
+  background: transparent;
+  color: #fff;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
 }
