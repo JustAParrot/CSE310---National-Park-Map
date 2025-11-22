@@ -1,0 +1,142 @@
+[
+  {
+    "name": "Yellowstone National Park",
+    "lat": 44.6,
+    "lng": -110.5,
+    "region": "West",
+    "description": "The first U.S. national park, famous for geysers and wildlife."
+  },
+  {
+    "name": "Yosemite National Park",
+    "lat": 37.8651,
+    "lng": -119.5383,
+    "region": "West",
+    "description": "Granite cliffs, giant sequoias, and stunning waterfalls."
+  },
+  {
+    "name": "Grand Canyon National Park",
+    "lat": 36.1069,
+    "lng": -112.1129,
+    "region": "West",
+    "description": "Iconic canyon carved by the Colorado River."
+  },
+  {
+    "name": "Zion National Park",
+    "lat": 37.2982,
+    "lng": -113.0263,
+    "region": "West",
+    "description": "Steep red cliffs and scenic canyon hikes."
+  },
+  {
+    "name": "Bryce Canyon National Park",
+    "lat": 37.593,
+    "lng": -112.1871,
+    "region": "West",
+    "description": "Famous for its hoodoos—unique rock spires."
+  },
+  {
+    "name": "Rocky Mountain National Park",
+    "lat": 40.3428,
+    "lng": -105.6836,
+    "region": "West",
+    "description": "High peaks, alpine lakes, and abundant wildlife."
+  },
+  {
+    "name": "Glacier National Park",
+    "lat": 48.7596,
+    "lng": -113.787,
+    "region": "West",
+    "description": "Known for its rugged mountains and glacial valleys."
+  },
+  {
+    "name": "Grand Teton National Park",
+    "lat": 43.7904,
+    "lng": -110.6818,
+    "region": "West",
+    "description": "Dramatic Teton Range and pristine lakes."
+  },
+  {
+    "name": "Arches National Park",
+    "lat": 38.7331,
+    "lng": -109.5925,
+    "region": "West",
+    "description": "Over 2,000 natural stone arches in the desert."
+  },
+  {
+    "name": "Joshua Tree National Park",
+    "lat": 33.8734,
+    "lng": -115.901,
+    "region": "West",
+    "description": "Desert landscapes and distinctive Joshua trees."
+  },
+  {
+    "name": "Sequoia National Park",
+    "lat": 36.4864,
+    "lng": -118.5658,
+    "region": "West",
+    "description": "Home to giant sequoia trees, including General Sherman."
+  },
+  {
+    "name": "Kings Canyon National Park",
+    "lat": 36.8879,
+    "lng": -118.5551,
+    "region": "West",
+    "description": "Deep canyons and high mountain wilderness."
+  },
+  {
+    "name": "Olympic National Park",
+    "lat": 47.8021,
+    "lng": -123.6044,
+    "region": "West",
+    "description": "Rainforests, coastline, and snow-capped peaks."
+  },
+  {
+    "name": "Acadia National Park",
+    "lat": 44.3386,
+    "lng": -68.2733,
+    "region": "East",
+    "description": "Coastal park in Maine with rocky shores and mountains."
+  },
+  {
+    "name": "Everglades National Park",
+    "lat": 25.2866,
+    "lng": -80.8987,
+    "region": "South",
+    "description": "Subtropical wetlands home to alligators and unique ecosystems."
+  },
+  {
+    "name": "Great Smoky Mountains National Park",
+    "lat": 35.6118,
+    "lng": -83.4895,
+    "region": "East",
+    "description": "America’s most visited park, straddling NC and TN."
+  },
+  {
+    "name": "Shenandoah National Park",
+    "lat": 38.2928,
+    "lng": -78.6796,
+    "region": "East",
+    "description": "Skyline Drive and Blue Ridge Mountain vistas."
+  },
+  {
+    "name": "Denali National Park",
+    "lat": 63.1148,
+    "lng": -151.1926,
+    "region": "Alaska",
+    "description": "Home to Denali, the highest peak in North America."
+  },
+  {
+    "name": "Haleakalā National Park",
+    "lat": 20.7204,
+    "lng": -156.1552,
+    "region": "Hawaii",
+    "description": "Volcanic landscapes and sunrise views above the clouds."
+  },
+  {
+    "name": "Badlands National Park",
+    "lat": 43.8554,
+    "lng": -102.3397,
+    "region": "Midwest",
+    "description": "Eroded buttes and mixed-grass prairie in South Dakota."
+  }
+]
